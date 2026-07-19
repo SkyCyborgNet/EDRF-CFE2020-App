@@ -1,0 +1,404 @@
+/* ============================================================================
+   CFE 2020 — CALCULADORA DE PRESIÓN DE VIENTO
+   Manual C.1.4 Diseño por Viento
+   Hoja de Estilos Principal
+   ============================================================================ */
+
+/* ─── Reset y Base ─────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #151515;
+    --bg-tertiary: #1a1a1a;
+    --bg-input: #2a2a2a;
+    --bg-result: #0D1B0D;
+    
+    --text-primary: #e0e0e0;
+    --text-secondary: #bbbbbb;
+    --text-muted: #888888;
+    
+    --color-green: #4CAF50;
+    --color-green-dark: #2E7D32;
+    --color-green-darker: #1B5E20;
+    --color-orange: #FF9800;
+    
+    --border-color: #4CAF50;
+    --border-radius: 10px;
+    --border-radius-sm: 6px;
+    
+    --font-mono: 'Courier New', 'Consolas', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    padding-bottom: var(--safe-area-bottom);
+}
+
+/* ─── Contenedor Principal ─────────────────────────────────────────────── */
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 15px;
+    padding-bottom: calc(30px + var(--safe-area-bottom));
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
+.header {
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.header h1 {
+    color: var(--color-green);
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    margin-bottom: 5px;
+    letter-spacing: -0.5px;
+}
+
+.header .subtitle {
+    color: var(--text-muted);
+    font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+}
+
+.header .formula {
+    color: var(--color-orange);
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 2vw, 0.75rem);
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+/* ─── Cards (Pasos) ────────────────────────────────────────────────────── */
+.card {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.2s ease;
+}
+
+.card:focus-within {
+    border-color: var(--color-orange);
+}
+
+.card h2 {
+    color: var(--color-green);
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    margin-bottom: 3px;
+}
+
+.card .ref {
+    color: var(--text-muted);
+    font-size: clamp(0.6rem, 2vw, 0.7rem);
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+/* ─── Labels ────────────────────────────────────────────────────────────── */
+.card label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+
+/* ─── Inputs y Selects ──────────────────────────────────────────────────── */
+.card select,
+.card input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    color: #ffffff;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    font-family: var(--font-sans);
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.card select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234CAF50' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 30px;
+}
+
+.card select:focus,
+.card input:focus {
+    outline: none;
+    border-color: var(--color-orange);
+    box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.2);
+}
+
+.card input.manual {
+    border-color: var(--color-orange);
+    background: #2a2520;
+}
+
+/* ─── Información ───────────────────────────────────────────────────────── */
+.info-text {
+    color: var(--color-orange);
+    font-size: clamp(0.65rem, 2vw, 0.75rem);
+    margin-bottom: 8px;
+    line-height: 1.5;
+    padding: 6px 8px;
+    background: rgba(255, 152, 0, 0.08);
+    border-radius: 4px;
+    border-left: 2px solid var(--color-orange);
+}
+
+.result-value {
+    color: var(--color-green);
+    font-weight: bold;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: rgba(76, 175, 80, 0.08);
+    border-radius: 4px;
+}
+
+/* ─── Elementos Ocultos ──────────────────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+
+/* ─── Botón Principal ───────────────────────────────────────────────────── */
+.btn-calculate {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--color-green-dark);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: clamp(1rem, 3vw, 1.1rem);
+    font-weight: bold;
+    cursor: pointer;
+    margin: 15px 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-calculate:hover {
+    background: #388E3C;
+}
+
+.btn-calculate:active {
+    background: var(--color-green-darker);
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(46, 125, 50, 0.2);
+}
+
+.btn-calculate:disabled {
+    background: #555;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ─── Resultado Final ───────────────────────────────────────────────────── */
+.final-result {
+    background: var(--bg-result);
+    border: 2px solid var(--color-green);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    margin: 15px 0;
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.15);
+}
+
+.final-result .qz-main {
+    color: var(--color-green);
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.final-result .qz-secondary {
+    color: var(--color-green);
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
+/* ─── Reporte Técnico ────────────────────────────────────────────────────── */
+.report-panel {
+    background: var(--bg-primary);
+    border: 1px solid #2a2a2a;
+    border-radius: var(--border-radius-sm);
+    padding: 15px;
+    margin: 12px 0;
+    font-family: var(--font-mono);
+    font-size: clamp(0.6rem, 2vw, 0.7rem);
+    white-space: pre-wrap;
+    max-height: 50vh;
+    overflow-y: auto;
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar para reporte */
+.report-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.report-panel::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+.report-panel::-webkit-scrollbar-thumb {
+    background: var(--color-green);
+    border-radius: 2px;
+}
+
+/* ─── Botones Secundarios ───────────────────────────────────────────────── */
+.btn-group {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.btn-secondary {
+    flex: 1;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    color: var(--color-green);
+    border: 1px solid var(--color-green);
+    border-radius: var(--border-radius-sm);
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-input);
+}
+
+.btn-secondary:active {
+    background: #333;
+    transform: scale(0.97);
+}
+
+/* ─── Banner de Instalación ─────────────────────────────────────────────── */
+.install-banner {
+    background: var(--color-green-dark);
+    color: #ffffff;
+    text-align: center;
+    padding: 14px;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    animation: pulse 2s infinite;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+
+/* Tablets */
+@media (min-width: 768px) {
+    .app-container {
+        padding: 25px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .card select,
+    .card input {
+        padding: 12px;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .app-container {
+        max-width: 900px;
+    }
+    
+    body {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* Modo oscuro forzado */
+@media (prefers-color-scheme: light) {
+    body {
+        background: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+    }
+}
+
+/* Pantalla de carga */
+@media (display-mode: standalone) {
+    .app-container {
+        padding-top: 20px;
+    }
+}
+
+/* Ajuste para notch */
+@supports (padding: max(0px)) {
+    .app-container {
+        padding-left: max(15px, env(safe-area-inset-left));
+        padding-right: max(15px, env(safe-area-inset-right));
+        padding-bottom: max(30px, env(safe-area-inset-bottom));
+    }
+}
+
+/* Impresión */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .card {
+        border: 1px solid #ccc;
+        break-inside: avoid;
+    }
+    
+    .btn-calculate,
+    .btn-group,
+    .install-banner {
+        display: none;
+    }
+}
