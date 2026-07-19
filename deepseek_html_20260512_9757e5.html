@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="description" content="Calculadora de Presión de Viento CFE 2020 - Manual C.1.4">
+    
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CFE Viento">
+    
+    <title>CFE 2020 - Diseño por Viento</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .header {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .header h1 {
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .header .subtitle {
+            color: #888;
+            font-size: 0.85em;
+        }
+        
+        .header .formula {
+            color: #FF9800;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75em;
+            margin-top: 8px;
+        }
+        
+        .card {
+            background: #151515;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #4CAF50;
+        }
+        
+        .card h2 {
+            color: #4CAF50;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .card .ref {
+            color: #888;
+            font-size: 0.7em;
+            margin-bottom: 12px;
+        }
+        
+        .card label {
+            display: block;
+            color: #bbb;
+            font-size: 0.85em;
+            margin-bottom: 3px;
+        }
+        
+        .card select, .card input {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #4CAF50;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .card select:focus, .card input:focus {
+            outline: none;
+            border-color: #FF9800;
+        }
+        
+        .card input.manual {
+            border-color: #FF9800;
+        }
+        
+        .info-text {
+            color: #FF9800;
+            font-size: 0.75em;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .result-value {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1em;
+            margin-top: 8px;
+        }
+        
+        .btn-calculate {
+            width: 100%;
+            padding: 14px;
+            background: #2E7D32;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 15px 0;
+        }
+        
+        .btn-calculate:active {
+            background: #1B5E20;
+            transform: scale(0.98);
+        }
+        
+        .btn-calculate:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+        
+        .final-result {
+            background: #0D1B0D;
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .final-result .qz-main {
+            color: #4CAF50;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .final-result .qz-secondary {
+            color: #4CAF50;
+            font-size: 1.3em;
+            margin-top: 5px;
+        }
+        
+        .report-panel {
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75em;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #e0e0e0;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .btn-secondary {
+            flex: 1;
+            padding: 10px;
+            background: #1a1a1a;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:active {
+            background: #2a2a2a;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .install-banner {
+            background: #1a5e1a;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Banner de instalación -->
+        <div id="installBanner" class="install-banner hidden">
+            📲 Toca aquí para instalar la app
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>🌪️ CFE 2020</h1>
+            <div class="subtitle">Manual de Diseño por Viento · C.1.4</div>
+            <div class="formula">VD = FT × Frz × VR | G = 0.392·Ω/(273+τ) | qz = 0.047·G·VD²</div>
+        </div>
+        
+        <!-- Paso 1 -->
+        <div class="card">
+            <h2>📌 PASO 1: GRUPO DE IMPORTANCIA</h2>
+            <div class="ref">Ref: Inciso 1.3, Tabla 1.1</div>
+            <select id="grupo" onchange="updateGrupo()">
+                <option value="A+">Grupo A+ — Importancia extrema</option>
+                <option value="A">Grupo A — Importancia alta</option>
+                <option value="B" selected>Grupo B — Importancia moderada</option>
+                <option value="C">Grupo C — Importancia baja</option>
+            </select>
+            <div id="infoGrupo" class="info-text"></div>
+        </div>
+        
+        <!-- Paso 2 -->
+        <div class="card">
+            <h2>⛰️ PASO 2: FACTOR DE TOPOGRAFÍA FT</h2>
+            <div class="ref">Ref: Inciso 2.4, Tabla 2.3</div>
+            <select id="topo" onchange="updateTopo()">
+                <option value="protegido">Sitio protegido — FT = 0.90</option>
+                <option value="normal" selected>Sitio normal — FT = 1.00</option>
+                <option value="expuesto">Sitio expuesto — Calcular FT</option>
+            </select>
+            <div id="ftManualGroup" class="hidden">
+                <label>FT manual (Ecs. 2.6-2.8):</label>
+                <input type="number" id="ftManual" value="1.30" step="0.01" min="0.8" max="2.0" class="manual">
+            </div>
+            <div id="infoFT" class="result-value">FT = 1.00</div>
+        </div>
+        
+        <!-- Paso 3 -->
+        <div class="card">
+            <h2>📐 PASO 3: FACTOR DE EXPOSICIÓN Frz</h2>
+            <div class="ref">Ref: Inciso 2.3, Tablas 2.1 y 2.2</div>
+            <select id="categoria" onchange="updateCategoria()">
+                <option value="1">Categoría 1 — Terreno abierto, costas</option>
+                <option value="2">Categoría 2 — Campo, cultivos</option>
+                <option value="3" selected>Categoría 3 — Áreas urbanas</option>
+                <option value="4">Categoría 4 — Centros urbanos</option>
+            </select>
+            <div id="infoCat" class="info-text"></div>
+            <label>Altura z (m):</label>
+            <input type="number" id="alturaZ" value="10" step="0.1" min="0.1" max="200">
+            <div id="infoFrz" class="result-value">Frz = (se calculará)</div>
+        </div>
+        
+        <!-- Paso 4 -->
+        <div class="card">
+            <h2>🌬️ PASO 4: VELOCIDAD DE DISEÑO VD</h2>
+            <div class="ref">Ref: Inciso 2, Ec. 2.1</div>
+            <label>Velocidad Regional VR (km/h):</label>
+            <input type="number" id="vr" value="120" step="0.1" min="1">
+            <div id="infoVD" class="result-value">VD = (se calculará)</div>
+        </div>
+        
+        <!-- Paso 5 -->
+        <div class="card">
+            <h2>🌡️ PASO 5: FACTOR DE CORRECCIÓN G</h2>
+            <div class="ref">Ref: Inciso 3.2, Ec. 3.2, Tabla 3.1</div>
+            <label>Altitud hm (msnm):</label>
+            <input type="number" id="altitud" value="500" step="1" min="0">
+            <div id="infoOmega" class="info-text">Ω = (se calculará de Tabla 3.1)</div>
+            <label>Temperatura τ (°C):</label>
+            <input type="number" id="tau" value="10" step="0.1" min="-50" max="50">
+            <div id="infoG" class="result-value">G = (se calculará)</div>
+        </div>
+        
+        <!-- Botón Calcular -->
+        <button class="btn-calculate" onclick="calcular()">
+            🔬 CALCULAR PRESIÓN DINÁMICA DE BASE qz
+        </button>
+        
+        <!-- Resultado Final -->
+        <div class="final-result" id="resultadoFinal">
+            <div style="color:#4CAF50; font-size:1.1em;">📊 RESULTADO FINAL</div>
+            <div class="qz-main" id="qzPa">qz = --- Pa (N/m²)</div>
+            <div class="qz-secondary" id="qzKg">qz = --- kg/m²</div>
+        </div>
+        
+        <!-- Reporte Técnico -->
+        <div class="card">
+            <h2>📋 REPORTE TÉCNICO</h2>
+            <div class="report-panel" id="reporte"></div>
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="copiarReporte()">📋 Copiar</button>
+                <button class="btn-secondary" onclick="guardarReporte()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
